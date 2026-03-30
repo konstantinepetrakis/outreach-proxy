@@ -13,7 +13,7 @@ app.use(express.json());
 
 // ── Health check ──────────────────────────────────────────────
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', version: '1.1.0' });
+  res.json({ status: 'ok', version: '1.2.0' });
 });
 
 // ── ZeroBounce: validate single email ─────────────────────────
@@ -52,7 +52,7 @@ app.post('/api/gmail/auth-url', (req, res) => {
   const { client_id, client_secret } = req.body;
   if (!client_id || !client_secret) return res.status(400).json({ error: 'Missing client_id or client_secret' });
 
-  const redirectUri = `${req.protocol}://${req.get('host')}/oauth2callback`;
+  const redirectUri = `https://${req.get('host')}/oauth2callback`;
   const state = Math.random().toString(36).substring(2);
   oauthSessions[state] = { client_id, client_secret };
 
@@ -86,7 +86,7 @@ app.get('/oauth2callback', async (req, res) => {
   }
 
   try {
-    const redirectUri = `${req.protocol}://${req.get('host')}/oauth2callback`;
+    const redirectUri = `https://${req.get('host')}/oauth2callback`;
     const oauth2Client = new google.auth.OAuth2(session.client_id, session.client_secret, redirectUri);
     const { tokens } = await oauth2Client.getToken(code);
 
